@@ -11,7 +11,21 @@ router.get('/', (req, res) => {
     console.error(`Error in GET '/genre'.`, error);
     res.sendStatus(500);
   })
-  
+});
+
+router.get('/:id', (req, res) => {
+  let queryText = `
+    SELECT "name" FROM "genres"
+    JOIN "movies_genres" ON "movies_genres"."genre_id" = "genres"."id"
+    WHERE "movie_id" = $1;
+  `;
+  pool.query(queryText,[req.params.id]).then((result) =>{
+    res.send(result.rows);
+  })
+  .catch((error) => {
+    console.error(`Error in GET '/genre/:id'.`, error);
+    res.sendStatus(500);
+  })
 });
 
 module.exports = router;
