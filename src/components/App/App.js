@@ -22,9 +22,8 @@ function App() {
         <Route path="/add" exact>
           <AddMovie/>
         </Route>
-        <Route path="/details/1" exact>
-          {/* Adding with id=1 for an example during dev */}
-          <Details id={1}/>
+        <Route path="/details/:id">
+          <Details />
         </Route>
       </Router>
     </div>
