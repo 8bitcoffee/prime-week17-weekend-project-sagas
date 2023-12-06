@@ -12,7 +12,7 @@ function App() {
       <nav>
         <ul>
           <li><Link to='/'>Home</Link></li>
-          <li><Link to='/details'>Details</Link></li>
+          <li><Link to='/details/1'>Details</Link></li>
           <li><Link to='/add'>Add Movie</Link></li>
         </ul>
       </nav>     
