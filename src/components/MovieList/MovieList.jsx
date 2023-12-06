@@ -2,6 +2,11 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import './MovieList.css'
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+
 
 function MovieList() {
 
@@ -13,25 +18,27 @@ function MovieList() {
         dispatch({ type: 'FETCH_MOVIES' });
         dispatch({type: "FETCH_GENRES"});
     }, []);
-
-    return (
+    
+    return(
         <main>
-            <h1>MovieList</h1>
             {/* Update this with MUI cards */}
-            <section className="movies">
+            <div className='movies'>
                 {movies.map(movie => {
                     return (
-                        <div key={movie.id} >
-                            <h3 onClick={()=>history.push(`/details/${movie.id}`)}>{movie.title}</h3>
-                            <img onClick={()=>history.push(`/details/${movie.id}`)} src={movie.poster} alt={movie.title}/>
-                        </div>
+                        <Card onClick={()=>history.push(`/details/${movie.id}`)} key={movie.id} className="movie-list-card"elevation={6} sx={{ width: 220, backgroundColor: '#D62828' }}>
+                            <CardContent sx={{ height: 50} }>
+                                <Typography sx={{fontSize: "1.25em", color:'white'}} className='movie-list-title'>{movie.title}</Typography>
+                            </CardContent>
+                            <CardMedia sx={{height: 300}}>
+                                <img className="list-movie-poster" src={movie.poster} alt={movie.title}/>
+                            </CardMedia>
+                        </Card>
                     );
                 })}
-            </section>
+            </div>
             {/* End MUI */}
         </main>
-
-    );
+    )
 }
 
 export default MovieList;
