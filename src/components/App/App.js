@@ -3,19 +3,14 @@ import './App.css';
 import MovieList from '../MovieList/MovieList'
 import Details from '../Details/Details';
 import AddMovie from '../AddMovie/AddMovie';
+import Header from '../Header/Header.jsx';
+import Footer from '../Footer/Footer.jsx';
 
 function App() {
   return (
     <div className="App">
-      <h1>The Movies Saga!</h1>
-      <Router>
-      <nav>
-        <ul>
-          <li><Link to='/'>Home</Link></li>
-          <li><Link to='/details/1'>Details</Link></li>
-          <li><Link to='/add'>Add Movie</Link></li>
-        </ul>
-      </nav>     
+      <Header />
+      <Router>    
         <Route path="/" exact>
           <MovieList />
         </Route>
@@ -26,6 +21,7 @@ function App() {
           <Details />
         </Route>
       </Router>
+      <Footer />
     </div>
   );
 }
