@@ -4,7 +4,7 @@ import './index.css';
 import App from './components/App/App.js';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 // Provider allows us to use redux within our react app
-import { Provider } from 'react-redux';
+import { Provider, useSelector, useStore } from 'react-redux';
 import logger from 'redux-logger';
 // Import saga middleware
 import createSagaMiddleware from 'redux-saga';
@@ -15,6 +15,7 @@ import axios from 'axios';
 function* rootSaga() {
     yield takeEvery('FETCH_MOVIES', fetchAllMovies);
     yield takeEvery("FETCH_GENRES", fetchGenres);
+    yield takeEvery("FETCH_MOVIE_DETAILS", fetchMovieDetails);
 }
 
 function* fetchAllMovies() {
@@ -27,7 +28,6 @@ function* fetchAllMovies() {
     } catch {
         console.log('get all error');
     }
-        
 }
 
 function* fetchGenres() {
@@ -38,6 +38,20 @@ function* fetchGenres() {
     }
     catch (error) {
         console.error("Error in GET '/genre'", error);
+    }
+}
+
+function* fetchMovieDetails(action){
+    try {
+        const movieGenres = yield axios.get(`/api/genre/${action.payload.id}`);
+        let genreArray = [];
+        for (let genre of movieGenres.data){
+            genreArray.push(genre.name)
+        }
+        yield put ({type: "SET_MOVIE_DETAILS", payload: genreArray});
+    }
+    catch (error) {
+        console.error("Error in GET '/genre/:id'", error);
     }
 }
 
@@ -64,11 +78,22 @@ const genres = (state = [], action) => {
     }
 }
 
+// Stores all details of movie for details page
+const movieDetails = (state = [], action) => {
+    switch (action.type) {
+        case 'SET_MOVIE_DETAILS':
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 // Create one store that all components can use
 const storeInstance = createStore(
     combineReducers({
         movies,
         genres,
+        movieDetails
     }),
     // Add sagaMiddleware to our store
     applyMiddleware(sagaMiddleware, logger),

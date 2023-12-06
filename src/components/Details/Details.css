@@ -1,0 +1,32 @@
+#details-div{
+    margin-top: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
+}
+
+.column { /* sets structure for 2 column setup in button area */
+    float: left;
+    width: 50%;
+    height: auto;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.details-img {
+    width: 350px;
+}
+
+.row:after { /* Makes column section end */
+content: "";
+display: table;
+clear: both;
+}
+
+.details-title {
+    text-decoration: underline;
+    text-align: center;
+}
+
+.details-subtitle {
+    text-decoration: underline;
+}
