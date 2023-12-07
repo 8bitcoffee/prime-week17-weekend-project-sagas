@@ -1,0 +1,21 @@
+#header-div {
+    background-color: #003049;
+    color: whitesmoke;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.header-btn {
+    color: #003049;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.header-icon {
+    pointer-events:none;
+}
+
+hr {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}

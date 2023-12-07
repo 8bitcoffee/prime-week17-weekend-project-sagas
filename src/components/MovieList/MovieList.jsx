@@ -25,7 +25,13 @@ function MovieList() {
             <div className='movies'>
                 {movies.map(movie => {
                     return (
-                        <Card onClick={()=>history.push(`/details/${movie.id}`)} key={movie.id} className="movie-list-card"elevation={6} sx={{ width: 220, backgroundColor: '#D62828' }}>
+                        <Card 
+                            onClick={()=>history.push(`/details/${movie.id}`)}
+                            key={movie.id}
+                            className="movie-list-card"
+                            elevation={6}
+                            sx={{ width: 220, backgroundColor: '#D62828' }}
+                        >
                             <CardContent sx={{ height: 50} }>
                                 <Typography sx={{fontSize: "1.25em", color:'white'}} className='movie-list-title'>{movie.title}</Typography>
                             </CardContent>
