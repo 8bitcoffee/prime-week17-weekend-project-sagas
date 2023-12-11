@@ -42,6 +42,7 @@ function Header(){
             <Button
                 className='header-btn' 
                 variant="contained"
+                onClick={()=>{history.push('/add')}}
                 sx={{
                     backgroundColor: "white",
                     color: "#003049",
@@ -57,6 +58,7 @@ function Header(){
                     className='header-icon'
                     variant="sharp"
                     fontSize='large'
+                    onClick={()=>{history.push('/add')}}
                     sx={{
                         color:"#003049",
                         ":hover": {
