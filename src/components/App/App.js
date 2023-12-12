@@ -5,6 +5,7 @@ import Details from '../Details/Details';
 import AddMovie from '../AddMovie/AddMovie';
 import Header from '../Header/Header.jsx';
 import Footer from '../Footer/Footer.jsx';
+import { useSelector } from 'react-redux';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Router>
         <Header />    
         <Route path="/" exact>
-          <MovieList />
+          <MovieList movies={useSelector(store=>store.movies)} />
         </Route>
         <Route path="/add" exact>
           <AddMovie/>
