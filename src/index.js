@@ -16,6 +16,8 @@ function* rootSaga() {
     yield takeEvery('FETCH_MOVIES', fetchAllMovies);
     yield takeEvery("FETCH_GENRES", fetchGenres);
     yield takeEvery("FETCH_MOVIE_DETAILS", fetchMovieDetails);
+    yield takeEvery("SEND_NEW_GENRE", sendNewGenre);
+    yield takeEvery("SEND_NEW_MOVIE", sendNewGenre);
 }
 
 function* fetchAllMovies() {
@@ -55,6 +57,14 @@ function* fetchMovieDetails(action){
     }
 }
 
+function* sendNewGenre(action){
+
+}
+
+function* sendNewMovie(action){
+
+}
+
 // Create sagaMiddleware
 const sagaMiddleware = createSagaMiddleware();
 
@@ -88,12 +98,23 @@ const movieDetails = (state = [], action) => {
     }
 }
 
+// Stores most recent search result
+const searchResults = (state = [], action) => {
+    switch (action.type) {
+        case 'SET_SEARCH_RESULTS':
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 // Create one store that all components can use
 const storeInstance = createStore(
     combineReducers({
         movies,
         genres,
-        movieDetails
+        movieDetails,
+        searchResults
     }),
     // Add sagaMiddleware to our store
     applyMiddleware(sagaMiddleware, logger),

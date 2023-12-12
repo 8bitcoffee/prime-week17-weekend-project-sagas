@@ -33,7 +33,7 @@ function MovieList(props) {
                     {movies.map(movie => {
                         return (
                             <Card 
-                                onClick={()=>history.push(`/details/${movie.id}`)}
+                                onClick={()=>history.push(`/searchdetails/${movie.id}`)}
                                 key={movie.id}
                                 className="movie-list-card"
                                 elevation={6}

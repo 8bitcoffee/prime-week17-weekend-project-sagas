@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import './AddMovie.css';
-import MovieList from '../MovieList/MovieList';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import SearchList from '../SearchList/SearchList';
 
 function AddMovie(){
     const dispatch = useDispatch();
     const apiKey = process.env.REACT_APP_API_KEY;
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchResults, setSearchResults] = useState(useSelector(store=>store.movies))
+    const searchResults = useSelector(store=>store.searchResults);
+    const movies = useSelector(store=>store.movies);
+
+    if (searchResults.length == 0){
+        dispatch({
+            type: "SET_SEARCH_RESULTS",
+            payload: movies
+        })
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        
         let url = `https://api.themoviedb.org/3/search/movie?query=${encodeURI(searchTerm)}&api_key=${apiKey}`;
         axios.get(url)
             .then((response) => {
@@ -27,7 +37,10 @@ function AddMovie(){
                         filteredArray.push(formattedMovie);
                     }
                 }
-                setSearchResults(filteredArray);
+                dispatch({
+                    type: "SET_SEARCH_RESULTS",
+                    payload: filteredArray
+                })
                 console.log(response.data);
                 setSearchTerm("");
             })
@@ -35,6 +48,14 @@ function AddMovie(){
                 console.error("Error in API fetch", error);
                 alert("Error in search");
             })
+        ;
+    }
+
+    const clearSearchResults = () =>{
+        dispatch({
+            type: "SET_SEARCH_RESULTS",
+            payload: movies
+        });
     }
 
     useEffect(() => {
@@ -77,8 +98,23 @@ function AddMovie(){
                         color:"#003049"
                     }}
                 >Search</Button>
+                <Button
+                    id="clear-search-btn" 
+                    variant="contained"
+                    onClick={()=>clearSearchResults()}
+                    sx={{
+                        backgroundColor: "whitesmoke",
+                        ":hover":{backgroundColor:"#D62828", color:"whitesmoke"},
+                        height:"40px",
+                        marginLeft:"15px",
+                        marginTop:"10px",
+                        marginBottom: "10px",
+                        border:"2px solid #003049",
+                        color:"#003049"
+                    }}
+                >Clear Results</Button>
             </form>
-            <MovieList movies={searchResults} search={true}/>
+            <SearchList movies={searchResults}/>
         </div>
     )
 }

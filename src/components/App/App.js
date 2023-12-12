@@ -5,6 +5,7 @@ import Details from '../Details/Details';
 import AddMovie from '../AddMovie/AddMovie';
 import Header from '../Header/Header.jsx';
 import Footer from '../Footer/Footer.jsx';
+import SearchDetails from '../SearchDetails/SearchDetails.jsx';
 import { useSelector } from 'react-redux';
 
 function App() {
@@ -20,6 +21,9 @@ function App() {
         </Route>
         <Route path="/details/:id">
           <Details />
+        </Route>
+        <Route path="/searchdetails/:id">
+          <SearchDetails />
         </Route>
       </Router>
       <Footer />
