@@ -17,7 +17,9 @@ function* rootSaga() {
     yield takeEvery("FETCH_GENRES", fetchGenres);
     yield takeEvery("FETCH_MOVIE_DETAILS", fetchMovieDetails);
     yield takeEvery("SEND_NEW_GENRE", sendNewGenre);
-    yield takeEvery("SEND_NEW_MOVIE", sendNewGenre);
+    yield takeEvery("SEND_NEW_MOVIE", sendNewMovie);
+    yield takeEvery("SEND_NEW_MOVIE_GENRE", sendNewMovieGenre);
+    yield takeEvery("PROCESS_NEW_MOVIE", processNewMovie);
 }
 
 function* fetchAllMovies() {
@@ -53,16 +55,73 @@ function* fetchMovieDetails(action){
         yield put ({type: "SET_MOVIE_DETAILS", payload: genreArray});
     }
     catch (error) {
-        console.error("Error in GET '/genre/:id'", error);
+        console.error("Error in GET 'api/genre/:id'", error);
+    }
+}
+
+function* processNewMovie(action){
+    try{
+        console.log(action.payload.genre);
+        let genreIds = []
+        const genres = yield axios.get('/api/genre');
+        console.log(genres.data);
+        const genreNames = genres.data.map(genre=>{ return(genre.name)});
+        console.log(genreNames)
+        for (let genre of action.payload.genre){
+            if (genreNames.includes(genre)==false){
+                const response = yield axios.post('/api/genre', {name: genre});
+                console.log(response.data.id);
+                genreIds.push(response.data.id);
+            }
+            else {
+                const savedGenre = genres.data.map(genreMap => {return(genreMap.name == genre ? genreMap.id : null)});
+                console.log(savedGenre);
+                genreIds.push(savedGenre.id);
+            }
+        }
+        const filteredGenreIds = genreIds.filter(e=>e);
+        console.log(filteredGenreIds);
+        const movieID = yield axios.post('/api/movie', action.payload);
+        console.log(movieID);
+        for (let id of filteredGenreIds){
+            yield axios.post('/api/movie-genre',(movieID, id));
+            console.log(id);
+        }
+        yield put({type: "FETCH_MOVIES"});
+        yield put({type: "FETCH_GENRES"});
+    }
+    catch (error) {
+        console.error("Error in processing new movie", error);
     }
 }
 
 function* sendNewGenre(action){
-
+    try {
+        yield axios.post('/api/genre', action.payload);
+        yield put({type: "FETCH_GENRES"});
+    }
+    catch (error) {
+        console.error("Error in GET 'api/movie-genre/:id'", error);
+    }
 }
 
 function* sendNewMovie(action){
+    try {
+        yield axios.post('/api/movie', action.payload);
+        yield put({type: "FETCH_MOVIES"});
+    }
+    catch (error) {
+        console.error("Error in GET 'api/movie-genre/:id'", error);
+    }
+}
 
+function* sendNewMovieGenre(action){
+    try {
+        yield axios.post('/api/movie-genre', action.payload);
+    }
+    catch (error) {
+        console.error("Error in GET 'api/movie-genre/:id'", error);
+    }
 }
 
 // Create sagaMiddleware
@@ -113,8 +172,8 @@ const storeInstance = createStore(
     combineReducers({
         movies,
         genres,
-        movieDetails,
-        searchResults
+        // movieDetails,
+        searchResults,
     }),
     // Add sagaMiddleware to our store
     applyMiddleware(sagaMiddleware, logger),

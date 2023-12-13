@@ -22,7 +22,7 @@ function AddMovie(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         let url = `https://api.themoviedb.org/3/search/movie?query=${encodeURI(searchTerm)}&api_key=${apiKey}`;
         axios.get(url)
             .then((response) => {
@@ -56,11 +56,12 @@ function AddMovie(){
             type: "SET_SEARCH_RESULTS",
             payload: movies
         });
+        setSearchTerm("");
     }
 
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
-        dispatch({type: "FETCH_GENRES"});
+        dispatch({ type: "FETCH_GENRES"});
     }, []);
 
     return(

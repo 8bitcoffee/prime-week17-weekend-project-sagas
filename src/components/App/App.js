@@ -14,7 +14,7 @@ function App() {
       <Router>
         <Header />    
         <Route path="/" exact>
-          <MovieList movies={useSelector(store=>store.movies)} />
+          <MovieList />
         </Route>
         <Route path="/add" exact>
           <AddMovie/>

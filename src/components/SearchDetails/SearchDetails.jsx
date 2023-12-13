@@ -14,7 +14,6 @@ function SearchDetails(){
     const dispatch = useDispatch();
     const [currentMovie, setCurrentMovie] = useState({});
     const genres = useSelector(store=>store.genres);
-    const genreNames = genres.map(genre=>{ return(genre.name)});
 
     const loadCurrentMovie = () => {
         axios.get(`https://api.themoviedb.org/3/movie/${params.id}?api_key=${apiKey}`)
@@ -40,13 +39,8 @@ function SearchDetails(){
     }
 
     const addToLibrary = (movie) => {
-        for (let movieGenre of movie.genre){
-            if (genreNames.includes(movieGenre)==false){
-                dispatch
-            }
-        }
         dispatch({
-            type: "ADD_MOVIE",
+            type: "PROCESS_NEW_MOVIE",
             payload: movie
         })
     }

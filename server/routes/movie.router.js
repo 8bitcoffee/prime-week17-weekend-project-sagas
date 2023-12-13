@@ -19,19 +19,17 @@ router.get('/', (req, res) => {
 // Route to return all info for single movie
 router.get('/:id', (req, res) => {
   const queryText = `
-    SELECT 
-      "movies"."id" AS "id",
-      "movies"."title" AS "title",
-      "movies"."poster" AS "poster",
-      "movies"."description" AS "description",
-      "genres"."name" AS "genre" 
-    FROM "movies"
-    JOIN "movies_genres" ON "movies_genres"."movie_id" = "movies"."id"
-    JOIN "genres" ON "genres"."id" = "movies_genres"."genre_id"
-    WHERE "movies"."id" = $1;
+  SELECT 
+    movies.id AS id,
+    movies.title AS title,
+    movies.poster AS poster,
+    movies.description AS description
+  FROM movies
+  WHERE movies.id = $1;
   `;
   pool.query(queryText, [req.params.id])
   .then((result) => {
+    console.log("result:",result.rows)
     res.send(result.rows);
   })
   .catch(error => {
@@ -52,26 +50,11 @@ router.post('/', (req, res) => {
   pool.query(insertMovieQuery, [req.body.title, req.body.poster, req.body.description])
   .then(result => {
     console.log('New Movie Id:', result.rows[0].id); //ID IS HERE!
-    
-    const createdMovieId = result.rows[0].id
-
-    // Now handle the genre reference
-    const insertMovieGenreQuery = `
-      INSERT INTO "movies_genres" ("movie_id", "genre_id")
-      VALUES  ($1, $2);
-      `
-      // SECOND QUERY ADDS GENRE FOR THAT NEW MOVIE
-      pool.query(insertMovieGenreQuery, [createdMovieId, req.body.genre_id]).then(result => {
-        //Now that both are done, send back success!
-        res.sendStatus(201);
-      }).catch(err => {
-        // catch for second query
-        console.log(err);
-        res.sendStatus(500)
-      })
-
+    res.sendStatus(201);
+    res.send(result.rows[0].id);
+  })
 // Catch for first query
-  }).catch(err => {
+  .catch(err => {
     console.log(err);
     res.sendStatus(500)
   })

@@ -15,10 +15,7 @@ function SearchList(props) {
     const dispatch = useDispatch();
     const history = useHistory();
     const addToLibrary = (movie) => {
-        dispatch({
-            type: "ADD_MOVIE",
-            payload: movie
-        })
+        
     }
 
     useEffect(() => {
