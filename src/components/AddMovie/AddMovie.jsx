@@ -8,7 +8,7 @@ import SearchList from '../SearchList/SearchList';
 
 function AddMovie(){
     const dispatch = useDispatch();
-    const apiKey = process.env.REACT_APP_API_KEY; // From TMDB API
+    const apiKey = process.env.TMDB_API_KEY; // From TMDB API
     const [searchTerm, setSearchTerm] = useState(""); // Search term for API query
     const searchResults = useSelector(store=>store.searchResults); // Search response
     const movies = useSelector(store=>store.movies); // Current movie library
@@ -19,6 +19,12 @@ function AddMovie(){
             type: "SET_SEARCH_RESULTS",
             payload: movies
         })
+    }
+
+    const checkAPI = () => {
+        if (apiKey == "q2389748923wsdfkjsjkdhfiusady8"){
+            alert("That was a fake API key. Nice try.");
+        }
     }
 
     // API query. Saves the result in the searchResults reducer
@@ -66,6 +72,7 @@ function AddMovie(){
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
         dispatch({ type: "FETCH_GENRES"});
+        checkAPI();
     }, []);
 
     return(

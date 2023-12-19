@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 
 function SearchDetails(){
     const params = useParams();
-    const apiKey = process.env.REACT_APP_API_KEY;
+    const apiKey = process.env.TMDB_API_KEY;
     const history = useHistory();
     const dispatch = useDispatch();
     const [currentMovie, setCurrentMovie] = useState({});
