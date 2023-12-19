@@ -25,7 +25,7 @@ function Header(){
                         color: "whitesmoke"
                     }
                 }}
-            >Home
+            >My Library
                 <HomeIcon
                     className='header-icon'
                     variant="sharp"
