@@ -15,7 +15,7 @@ function SearchList(props) {
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const apiKey = process.env.REACT_APP_API_KEY;
+    const apiKey = process.env.TMDB_API_KEY;
 
     // Adds movie to library. Sends details to saga processNewMovie()
     const addToLibrary = (TMDB_id) => {
