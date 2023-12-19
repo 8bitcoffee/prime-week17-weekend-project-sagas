@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../modules/pool')
 
+// Gets all movies from a specific genre. Used for filtering
 router.get('/:id', (req,res) => {
     let queryText = `
         SELECT 
@@ -25,6 +26,7 @@ router.get('/:id', (req,res) => {
     ;
 });
 
+// Adds entry into junction table. Called after new movie added
 router.post('/', (req,res)=>{
     let queryText = `
         INSERT INTO movies_genres (movie_id, genre_id)

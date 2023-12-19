@@ -26,7 +26,6 @@ function* fetchAllMovies() {
     // get all movies from the DB
     try {
         const movies = yield axios.get('/api/movie');
-        console.log('get all:', movies.data);
         yield put({ type: 'SET_MOVIES', payload: movies.data });
 
     } catch {
@@ -37,7 +36,6 @@ function* fetchAllMovies() {
 function* fetchGenres() {
     try {
         const genres = yield axios.get('/api/genre');
-        console.log('get all: ', genres.data);
         yield put ({type: "SET_GENRES", payload: genres.data});
     }
     catch (error) {
@@ -61,31 +59,47 @@ function* fetchMovieDetails(action){
 
 function* processNewMovie(action){
     try{
-        console.log(action.payload.genre);
-        let genreIds = []
-        const genres = yield axios.get('/api/genre');
-        console.log(genres.data);
-        const genreNames = genres.data.map(genre=>{ return(genre.name)});
-        console.log(genreNames)
-        for (let genre of action.payload.genre){
-            if (genreNames.includes(genre)==false){
-                const response = yield axios.post('/api/genre', {name: genre});
-                console.log(response.data.id);
-                genreIds.push(response.data.id);
+        let genreIds = []; // empty array to collect IDs of that movie
+        let genres = yield axios.get('/api/genre'); // current genres in DB
+        let genreNames = genres.data.map(genre=>{ return(genre.name)}); // Existing genre names
+        console.log(action)
+        // Iterating over genre names of new movie
+        for (let genre of action.payload.genre){ 
+            if (genreNames.includes(genre)== false){
+                yield axios.post('/api/genre', {name: genre}); // Creates new genre in DB
+                genres = yield axios.get('/api/genre'); // Get updated list
+
+                for (let item of genres.data){ // Add new Id to collection of Genre Ids
+                    if (item.name == genre){
+                        genreIds.push(item.id)
+                    }
+                }
             }
             else {
-                const savedGenre = genres.data.map(genreMap => {return(genreMap.name == genre ? genreMap.id : null)});
-                console.log(savedGenre);
-                genreIds.push(savedGenre.id);
+                for (let item of genres.data){ 
+                    if (item.name == genre){
+                        genreIds.push(item.id) // Add id to collection of Genre Ids
+                    }
+                }
             }
         }
-        const filteredGenreIds = genreIds.filter(e=>e);
-        console.log(filteredGenreIds);
-        const movieID = yield axios.post('/api/movie', action.payload);
-        console.log(movieID);
-        for (let id of filteredGenreIds){
-            yield axios.post('/api/movie-genre',(movieID, id));
-            console.log(id);
+
+        yield axios.post('/api/movie', action.payload); // Posting movie to DB
+        let movies = yield axios.get('/api/movie'); // Getting updated movies
+        let newMovieId = 0;
+
+        for (let movie of movies.data){ // Getting DB id of new movie to make junction entry
+            if (movie.title == action.payload.title){
+                newMovieId = movie.id;
+            }
+        }
+
+        for (let genre_id of genreIds){ // Adding to junction table
+            let newMovie = {
+                movie_id : newMovieId,
+                genre_id : genre_id
+            }
+            yield axios.post('/api/movie-genre',newMovie);
         }
         yield put({type: "FETCH_MOVIES"});
         yield put({type: "FETCH_GENRES"});

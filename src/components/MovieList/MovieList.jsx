@@ -25,6 +25,7 @@ function MovieList() {
         dispatch({type: "FETCH_GENRES"});
     }, []);
 
+    // Filters movies by genre
     const handleChange = (event) => {
         setCurrentGenre(event.target.value)
         if (event.target.value == "" || event.target.value == "all"){

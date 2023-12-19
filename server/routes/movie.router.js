@@ -18,13 +18,17 @@ router.get('/', (req, res) => {
 
 // Route to return all info for single movie
 router.get('/:id', (req, res) => {
+  console.log(req.params.id);
   const queryText = `
   SELECT 
     movies.id AS id,
     movies.title AS title,
     movies.poster AS poster,
-    movies.description AS description
+    movies.description AS description,
+    genres.name AS genre
   FROM movies
+  JOIN movies_genres ON movies_genres.movie_id = movies.id
+  JOIN genres ON genres.id = movies_genres.genre_id
   WHERE movies.id = $1;
   `;
   pool.query(queryText, [req.params.id])
@@ -38,6 +42,7 @@ router.get('/:id', (req, res) => {
   })
 });
 
+// Create new movie
 router.post('/', (req, res) => {
   console.log(req.body);
   // RETURNING "id" will give us back the id of the created movie
@@ -49,9 +54,7 @@ router.post('/', (req, res) => {
   // FIRST QUERY MAKES MOVIE
   pool.query(insertMovieQuery, [req.body.title, req.body.poster, req.body.description])
   .then(result => {
-    console.log('New Movie Id:', result.rows[0].id); //ID IS HERE!
     res.sendStatus(201);
-    res.send(result.rows[0].id);
   })
 // Catch for first query
   .catch(err => {

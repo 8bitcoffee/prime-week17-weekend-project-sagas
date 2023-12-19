@@ -13,6 +13,7 @@ function Details(){
     const dispatch = useDispatch();
     const [currentMovie, setCurrentMovie] = useState({});
 
+    // Gets specific movie from details
     const loadCurrentMovie = () => {
         axios.get(`/api/movie/${params.id}`).then((result) => {
             console.log(result.data);

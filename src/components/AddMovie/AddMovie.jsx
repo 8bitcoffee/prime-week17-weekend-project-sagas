@@ -8,11 +8,12 @@ import SearchList from '../SearchList/SearchList';
 
 function AddMovie(){
     const dispatch = useDispatch();
-    const apiKey = process.env.REACT_APP_API_KEY;
-    const [searchTerm, setSearchTerm] = useState("");
-    const searchResults = useSelector(store=>store.searchResults);
-    const movies = useSelector(store=>store.movies);
+    const apiKey = process.env.REACT_APP_API_KEY; // From TMDB API
+    const [searchTerm, setSearchTerm] = useState(""); // Search term for API query
+    const searchResults = useSelector(store=>store.searchResults); // Search response
+    const movies = useSelector(store=>store.movies); // Current movie library
 
+    // If there hasn't been a search, display the current library
     if (searchResults.length == 0){
         dispatch({
             type: "SET_SEARCH_RESULTS",
@@ -20,6 +21,7 @@ function AddMovie(){
         })
     }
 
+    // API query. Saves the result in the searchResults reducer
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -51,6 +53,7 @@ function AddMovie(){
         ;
     }
 
+    // Clears search results and displays library instead
     const clearSearchResults = () =>{
         dispatch({
             type: "SET_SEARCH_RESULTS",
@@ -59,6 +62,7 @@ function AddMovie(){
         setSearchTerm("");
     }
 
+    // Get updated library and genre info on refresh
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
         dispatch({ type: "FETCH_GENRES"});

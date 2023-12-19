@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
+import axios from 'axios';
 import './SearchList.css'
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -14,10 +15,39 @@ function SearchList(props) {
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const addToLibrary = (movie) => {
-        
+    const apiKey = process.env.REACT_APP_API_KEY;
+
+    // Adds movie to library. Sends details to saga processNewMovie()
+    const addToLibrary = (TMDB_id) => {
+        // Querry the API for full details of the movie
+        axios.get(`https://api.themoviedb.org/3/movie/${TMDB_id}?api_key=${apiKey}`)
+            .then((response) => {
+                let tempMovie = {
+                    title: response.data.title,
+                    description: response.data.overview,
+                    poster: `https://image.tmdb.org/t/p/original${response.data.poster_path}`
+                };
+
+                tempMovie.genre = [];
+
+                // Adds just the genre names to the array instead of including TMDB genre ids
+                for (let genre of response.data.genres){
+                    tempMovie.genre.push(genre.name);
+                }
+
+                dispatch({
+                    type: "PROCESS_NEW_MOVIE",
+                    payload: tempMovie
+                })
+            })
+            .catch((error) => {
+                console.error(`Error in GET from TMDB`, error);
+                alert("Something went wrong. Check console.");
+            })
+        ;
     }
 
+    // Get updated library and genre info on refresh
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
         dispatch({type: "FETCH_GENRES"});
@@ -30,16 +60,21 @@ function SearchList(props) {
                 {props.movies.map(movie => {
                     return (
                         <Card 
-                            onClick={()=>history.push(`/searchdetails/${movie.id}`)}
                             key={movie.id}
                             className="movie-list-card"
                             elevation={6}
                             sx={{ width: 220, backgroundColor: '#D62828' }}
                         >
                             <CardContent sx={{ height: 50} }>
-                                <Typography sx={{fontSize: "1.25em", color:'white'}} className='movie-list-title'>{movie.title}</Typography>
+                                <Typography 
+                                    onClick={()=>history.push(`/searchdetails/${movie.id}`)}
+                                    sx={{fontSize: "1.25em", color:'white'}} className='movie-list-title'
+                                >{movie.title}</Typography>
                             </CardContent>
-                            <CardMedia sx={{height: 300}}>
+                            <CardMedia 
+                                sx={{height: 300}}
+                                onClick={()=>history.push(`/searchdetails/${movie.id}`)}
+                            >
                                 <img className="list-movie-poster" src={movie.poster} alt={movie.title}/>
                             </CardMedia>
                             <CardActions sx={{height: 50}}>
@@ -50,7 +85,7 @@ function SearchList(props) {
                                         ":hover":{backgroundColor:"#D62828"},
                                         border:"5px solid #F77F00"
                                     }}
-                                    onClick={()=>addToLibrary(movie)}
+                                    onClick={()=>addToLibrary(movie.id)}
                                 >
                                     <QueueSharpIcon
                                         className='header-icon'

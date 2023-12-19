@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../modules/pool')
 
+// Returns all genres
 router.get('/', (req, res) => {
   let queryText = `SELECT * FROM "genres";`
   pool.query(queryText).then((result) =>{
@@ -13,6 +14,7 @@ router.get('/', (req, res) => {
   })
 });
 
+// Gets all genres for specific movie
 router.get('/:id', (req, res) => {
   let queryText = `
     SELECT name FROM genres
@@ -28,8 +30,8 @@ router.get('/:id', (req, res) => {
   })
 });
 
+// Creates new genre
 router.post('/', (req,res) => {
-  console.log(req.body)
   let queryText = `
     INSERT INTO genres (name)
     VALUES ($1)
@@ -37,9 +39,7 @@ router.post('/', (req,res) => {
   `;
   pool.query(queryText,[req.body.name])
     .then((result) => {
-      
-      res.sendStatus(201)
-      res.send(result.rows[0].id)
+      res.sendStatus(201);
     })
     .catch((error) => {
       console.error(`Error in POST '/genre'.`, error);

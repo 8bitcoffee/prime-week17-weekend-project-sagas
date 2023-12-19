@@ -56,3 +56,8 @@
     border: 5px solid #F77F00;
     max-width: 180px;
 }
+
+h3 {
+    color: whitesmoke;
+    text-decoration: underline;
+}
